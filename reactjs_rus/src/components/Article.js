@@ -15,6 +15,7 @@ import toggleOpen from '../decorators/toggleOpen'
 //     )
 // }
 
+
 class Article extends Component {
     static propTypes = {
         article: PropTypes.shape({
@@ -24,13 +25,22 @@ class Article extends Component {
         }).isRequired
     };
 
+
+    componentWillReceiveProps(nextProps){
+        console.log('---', 'updating', this.props.isOpen, nextProps.isOpen)
+    }
+
+    componentWillMount(){
+        console.log('---', 'mounting')
+    }
+    ref
+
     render() {
         const {article, isOpen, toggleOpen} = this.props;
-        console.log('---', this.props);
         return (
-            <div>
+            <div ref = {this.setContainerRef}>
+                {/*<h2>{this.getTime()}</h2>*/}
                 <h3>{article.title}</h3>
-                {/*<h4>{(new Date).toLocaleString()}</h4>*/}
                 <button onClick={toggleOpen}>
                     {isOpen ? 'Close' : 'Open'}
                 </button>
@@ -39,16 +49,29 @@ class Article extends Component {
         )
     }
 
+    setContainerRef = ref => {
+        this.container = ref;
+        console.log('---', ref);
+    };
+
+    componentDidMount(){
+        console.log('---', 'mounted')
+    }
+
+   static getTime() {
+        return (new Date).toLocaleString()
+    };
+
     getBody() {
         const {article, isOpen} = this.props;
         if (!isOpen) return null;
 
         return <section>
             {article.text}
-            <CommentList comments = {article.comments}/>
-            </section>
-    }
+            <CommentList comments={article.comments}/>
+        </section>
+    };
 
- }
+}
 
-export default toggleOpen(Article)
+export default Article
