@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import CommentList from './CommentList'
 import PropTypes from 'prop-types'
+import toggleOpen from '../decorators/toggleOpen'
 
 // export default function Article(props) {
 //     const {article} = props;
@@ -14,8 +15,7 @@ import PropTypes from 'prop-types'
 //     )
 // }
 
-
-export default class Article extends Component {
+class Article extends Component {
     static propTypes = {
         article: PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -23,23 +23,15 @@ export default class Article extends Component {
             text: PropTypes.string
         }).isRequired
     };
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isOpen: false
-        }
-    }
 
     render() {
-        const {article} = this.props;
+        const {article, isOpen, toggleOpen} = this.props;
         console.log('---', this.props);
-        const {isOpen} = this.state;
         return (
             <div>
                 <h3>{article.title}</h3>
                 {/*<h4>{(new Date).toLocaleString()}</h4>*/}
-                <button onClick={this.toggleOpen}>
+                <button onClick={toggleOpen}>
                     {isOpen ? 'Close' : 'Open'}
                 </button>
                 {this.getBody()}
@@ -48,19 +40,15 @@ export default class Article extends Component {
     }
 
     getBody() {
-        if (!this.state.isOpen) return null;
-        const {article} = this.props;
+        const {article, isOpen} = this.props;
+        if (!isOpen) return null;
+
         return <section>
             {article.text}
             <CommentList comments = {article.comments}/>
             </section>
     }
 
-    toggleOpen = (ev) => {
-        ev.preventDefault();
-        console.log('---', ev);
-        this.setState({
-            isOpen: !this.state.isOpen
-        })
-    }
-}
+ }
+
+export default toggleOpen(Article)
